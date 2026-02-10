@@ -3,6 +3,7 @@
 An opinionated blog starter template powered by **Astro** + **Hono** + **Cloudflare Workers** with a built-in admin panel, CMS, analytics, and media management — all using Cloudflare-native services.
 
 **[Live Demo](https://cf-astro-blog-starter.h1n054ur.dev)** 
+--
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/h1n054ur/cf-astro-blog-starter)
 
 ## Stack
