@@ -2,7 +2,7 @@
 
 An opinionated blog starter template powered by **Astro** + **Hono** + **Cloudflare Workers** with a built-in admin panel, CMS, analytics, and media management — all using Cloudflare-native services.
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/h1n054ur/cf-astro-blog-starter)
+**[Live Demo](https://cf-astro-blog-starter.h1n054ur.dev)** | [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/h1n054ur/cf-astro-blog-starter)
 
 ## Stack
 
@@ -122,6 +122,8 @@ echo -n 'your-password' | sha256sum
 | `bun run db:generate` | Generate Drizzle migration |
 | `bun run db:migrate:local` | Apply migrations locally |
 | `bun run db:migrate:remote` | Apply migrations to production |
+| `bun run db:seed:local` | Seed local DB with sample posts |
+| `bun run db:seed:remote` | Seed production DB with sample posts |
 
 ## Project Structure
 
@@ -145,6 +147,8 @@ src/
 ├── db/schema.ts            # Drizzle schema
 ├── lib/                    # Shared utilities
 └── middleware.ts            # Security headers
+scripts/
+└── seed.sql                # Sample blog posts for demo/dev
 tests/
 ├── unit/                   # Schema tests
 └── integration/            # API endpoint tests

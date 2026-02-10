@@ -16,7 +16,9 @@
 		"test": "bun test",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate:local": "wrangler d1 migrations apply DB --local",
-		"db:migrate:remote": "wrangler d1 migrations apply DB --remote"
+		"db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+		"db:seed:local": "wrangler d1 execute DB --local --file=scripts/seed.sql",
+		"db:seed:remote": "wrangler d1 execute DB --remote --file=scripts/seed.sql"
 	},
 	"cloudflare": {
 		"bindings": {
