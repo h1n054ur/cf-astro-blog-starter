@@ -68,14 +68,16 @@ auth.get("/logout", (c) => {
 
 // GET /api/auth/verify
 auth.get("/verify", async (c) => {
-	const { getCookie } = await import("hono/cookie");
+	const { getCookie } = await import(/* @vite-ignore */ "hono/cookie");
 	const token = getCookie(c, "admin_session");
 	if (!token) {
 		return c.json({ authenticated: false }, 401);
 	}
 
 	try {
-		const { verifyToken } = await import("../middleware/auth");
+		const { verifyToken } = await import(
+			/* @vite-ignore */ "../middleware/auth"
+		);
 		const valid = await verifyToken(c.env.JWT_SECRET, token);
 		return c.json({ authenticated: valid }, valid ? 200 : 401);
 	} catch {
