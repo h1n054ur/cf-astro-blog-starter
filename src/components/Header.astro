@@ -1,5 +1,8 @@
 ---
-const _currentPath = Astro.url.pathname;
+import ThemeToggle from "./ThemeToggle.astro";
+import { siteConfig } from "@/lib/types";
+
+const currentPath = Astro.url.pathname;
 ---
 
 <header class="site-header">

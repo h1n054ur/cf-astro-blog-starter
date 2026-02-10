@@ -1,9 +1,12 @@
 ---
 import { desc, eq } from "drizzle-orm";
+import Base from "@/layouts/Base.astro";
+import PostCard from "@/components/PostCard.astro";
+import { siteConfig } from "@/lib/types";
 import { blogCategories, blogPosts } from "@/db/schema";
 import { getDb } from "@/lib/db";
 
-let _recentPosts: Array<{
+let recentPosts: Array<{
 	title: string;
 	slug: string;
 	excerpt: string | null;
@@ -29,7 +32,7 @@ try {
 		.where(eq(blogPosts.status, "published"))
 		.orderBy(desc(blogPosts.publishedAt))
 		.limit(5);
-	_recentPosts = rows;
+	recentPosts = rows;
 } catch {
 	// D1 not bound yet — render without posts
 }

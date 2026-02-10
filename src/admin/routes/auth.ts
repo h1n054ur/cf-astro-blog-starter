@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import { deleteCookie, setCookie } from "hono/cookie";
-import { createToken } from "../middleware/auth";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
+import { createToken, verifyToken } from "../middleware/auth";
 import {
 	clearAttempts,
 	rateLimit,
@@ -68,16 +68,12 @@ auth.get("/logout", (c) => {
 
 // GET /api/auth/verify
 auth.get("/verify", async (c) => {
-	const { getCookie } = await import(/* @vite-ignore */ "hono/cookie");
 	const token = getCookie(c, "admin_session");
 	if (!token) {
 		return c.json({ authenticated: false }, 401);
 	}
 
 	try {
-		const { verifyToken } = await import(
-			/* @vite-ignore */ "../middleware/auth"
-		);
 		const valid = await verifyToken(c.env.JWT_SECRET, token);
 		return c.json({ authenticated: valid }, valid ? 200 : 401);
 	} catch {

@@ -1,6 +1,7 @@
 ---
 import { eq } from "drizzle-orm";
 import { marked } from "marked";
+import Post from "@/layouts/Post.astro";
 import { blogCategories, blogPosts } from "@/db/schema";
 import { getDb } from "@/lib/db";
 
@@ -65,7 +66,7 @@ if (!post) {
 	return Astro.redirect("/blog");
 }
 
-const _htmlContent = await marked.parse(post.content);
+const htmlContent = await marked.parse(post.content);
 ---
 
 <Post
