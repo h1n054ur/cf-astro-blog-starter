@@ -1,0 +1,4 @@
+JWT_SECRET=generate-a-random-string-using-openssl-rand-hex-32
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD_HASH=sha256-hash-of-your-password
+TURNSTILE_SECRET_KEY=your-turnstile-secret-key

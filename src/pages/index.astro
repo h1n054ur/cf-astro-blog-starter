@@ -1,0 +1,69 @@
+---
+import { desc, eq } from "drizzle-orm";
+import { blogCategories, blogPosts } from "@/db/schema";
+import { getDb } from "@/lib/db";
+
+let _recentPosts: Array<{
+	title: string;
+	slug: string;
+	excerpt: string | null;
+	publishedAt: string | null;
+	authorName: string | null;
+	categoryName: string | null;
+}> = [];
+
+try {
+	const { env } = Astro.locals.runtime;
+	const db = getDb(env.DB);
+	const rows = await db
+		.select({
+			title: blogPosts.title,
+			slug: blogPosts.slug,
+			excerpt: blogPosts.excerpt,
+			publishedAt: blogPosts.publishedAt,
+			authorName: blogPosts.authorName,
+			categoryName: blogCategories.name,
+		})
+		.from(blogPosts)
+		.leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
+		.where(eq(blogPosts.status, "published"))
+		.orderBy(desc(blogPosts.publishedAt))
+		.limit(5);
+	_recentPosts = rows;
+} catch {
+	// D1 not bound yet — render without posts
+}
+---
+
+<Base title={siteConfig.name} description={siteConfig.description}>
+	<section style="margin-bottom: var(--space-3xl);">
+		<h1 style="font-size: var(--font-size-4xl); margin-bottom: var(--space-md);">
+			{siteConfig.name}
+		</h1>
+		<p style="font-size: var(--font-size-lg); color: var(--color-text-secondary); max-width: var(--max-width-prose);">
+			{siteConfig.description}
+		</p>
+	</section>
+
+	<section>
+		<h2 style="font-size: var(--font-size-2xl); margin-bottom: var(--space-lg);">Recent Posts</h2>
+		{recentPosts.length > 0 ? (
+			<div style="display: grid; gap: var(--space-lg);">
+				{recentPosts.map((post) => (
+					<PostCard
+						title={post.title}
+						slug={post.slug}
+						excerpt={post.excerpt}
+						publishedAt={post.publishedAt}
+						authorName={post.authorName}
+						categoryName={post.categoryName}
+					/>
+				))}
+			</div>
+		) : (
+			<p style="color: var(--color-text-muted);">
+				No posts yet. Create your first post from the <a href="/api/admin">admin panel</a>.
+			</p>
+		)}
+	</section>
+</Base>

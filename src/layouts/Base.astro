@@ -1,0 +1,39 @@
+---
+import "@/styles/global.css";
+
+interface Props {
+	title: string;
+	description?: string;
+	image?: string;
+	canonicalUrl?: string;
+}
+
+const { title, description, image, canonicalUrl } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={title}
+			description={description}
+			image={image}
+			canonicalUrl={canonicalUrl}
+		/>
+		<script is:inline>
+			(function () {
+				const theme = localStorage.getItem("theme");
+				if (theme === "dark" || theme === "light") {
+					document.documentElement.setAttribute("data-theme", theme);
+				}
+			})();
+		</script>
+	</head>
+	<body>
+		<Header />
+		<main class="container" style="flex: 1; padding-block: var(--space-2xl);">
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>

@@ -1,0 +1,80 @@
+---
+import { eq } from "drizzle-orm";
+import { marked } from "marked";
+import { blogCategories, blogPosts } from "@/db/schema";
+import { getDb } from "@/lib/db";
+
+const { slug } = Astro.params;
+
+if (!slug) {
+	return Astro.redirect("/blog");
+}
+
+let post: {
+	title: string;
+	content: string;
+	excerpt: string | null;
+	publishedAt: string | null;
+	authorName: string | null;
+	metaTitle: string | null;
+	metaDescription: string | null;
+	canonicalUrl: string | null;
+	featuredImageKey: string | null;
+	featuredImageAlt: string | null;
+	categoryName: string | null;
+} | null = null;
+
+try {
+	const { env } = Astro.locals.runtime;
+	const db = getDb(env.DB);
+
+	const [row] = await db
+		.select({
+			title: blogPosts.title,
+			content: blogPosts.content,
+			excerpt: blogPosts.excerpt,
+			publishedAt: blogPosts.publishedAt,
+			authorName: blogPosts.authorName,
+			metaTitle: blogPosts.metaTitle,
+			metaDescription: blogPosts.metaDescription,
+			canonicalUrl: blogPosts.canonicalUrl,
+			featuredImageKey: blogPosts.featuredImageKey,
+			featuredImageAlt: blogPosts.featuredImageAlt,
+			categoryName: blogCategories.name,
+		})
+		.from(blogPosts)
+		.leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
+		.where(eq(blogPosts.slug, slug))
+		.limit(1);
+
+	if (row) {
+		post = row;
+
+		// Increment view count (fire and forget)
+		db.update(blogPosts)
+			.set({ viewCount: blogPosts.viewCount })
+			.where(eq(blogPosts.slug, slug))
+			.run()
+			.catch(() => {});
+	}
+} catch {
+	// D1 not bound
+}
+
+if (!post) {
+	return Astro.redirect("/blog");
+}
+
+const _htmlContent = await marked.parse(post.content);
+---
+
+<Post
+	title={post.metaTitle || post.title}
+	description={post.metaDescription || post.excerpt || undefined}
+	canonicalUrl={post.canonicalUrl || undefined}
+	publishedAt={post.publishedAt || undefined}
+	authorName={post.authorName || undefined}
+	categoryName={post.categoryName || undefined}
+>
+	<Fragment set:html={htmlContent} />
+</Post>

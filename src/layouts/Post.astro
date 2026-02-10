@@ -1,0 +1,43 @@
+---
+interface Props {
+	title: string;
+	description?: string;
+	image?: string;
+	canonicalUrl?: string;
+	publishedAt?: string;
+	authorName?: string;
+	categoryName?: string;
+}
+
+const {
+	title,
+	description,
+	image,
+	canonicalUrl,
+	publishedAt,
+	authorName,
+	categoryName,
+} = Astro.props;
+
+const _formattedDate = publishedAt
+	? new Date(publishedAt).toLocaleDateString("en-US", {
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+		})
+	: null;
+---
+
+<Base title={title} description={description} image={image} canonicalUrl={canonicalUrl}>
+	<article class="prose" style="margin-inline: auto;">
+		<header style="margin-bottom: var(--space-2xl);">
+			<h1 style="margin-top: 0;">{title}</h1>
+			<div style="display: flex; gap: var(--space-md); color: var(--color-text-muted); font-size: var(--font-size-sm);">
+				{formattedDate && <time datetime={publishedAt}>{formattedDate}</time>}
+				{authorName && <span>by {authorName}</span>}
+				{categoryName && <span>in {categoryName}</span>}
+			</div>
+		</header>
+		<slot />
+	</article>
+</Base>

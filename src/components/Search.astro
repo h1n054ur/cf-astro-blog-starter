@@ -1,0 +1,70 @@
+---
+---
+
+<div class="search-container">
+	<form class="search-form" action="/search" method="get">
+		<input
+			type="search"
+			name="q"
+			class="search-input"
+			placeholder="Search posts..."
+			aria-label="Search posts"
+			autocomplete="off"
+		/>
+		<button type="submit" class="search-button">Search</button>
+	</form>
+	<div id="search-results" class="search-results"></div>
+</div>
+
+<style>
+	.search-container {
+		width: 100%;
+		max-width: 32rem;
+	}
+
+	.search-form {
+		display: flex;
+		gap: var(--space-sm);
+	}
+
+	.search-input {
+		flex: 1;
+		padding: var(--space-sm) var(--space-md);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		background-color: var(--color-bg);
+		color: var(--color-text);
+		font-size: var(--font-size-base);
+		font-family: var(--font-sans);
+		transition: border-color var(--transition);
+	}
+
+	.search-input::placeholder {
+		color: var(--color-text-muted);
+	}
+
+	.search-input:focus {
+		outline: none;
+		border-color: var(--color-accent);
+	}
+
+	.search-button {
+		padding: var(--space-sm) var(--space-lg);
+		background-color: var(--color-accent);
+		color: #ffffff;
+		border: none;
+		border-radius: var(--radius-sm);
+		font-size: var(--font-size-sm);
+		font-family: var(--font-sans);
+		cursor: pointer;
+		transition: background-color var(--transition);
+	}
+
+	.search-button:hover {
+		background-color: var(--color-accent-hover);
+	}
+
+	.search-results {
+		margin-top: var(--space-md);
+	}
+</style>

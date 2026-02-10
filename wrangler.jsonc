@@ -1,0 +1,51 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"main": "dist/_worker.js/index.js",
+	"name": "cf-astro-blog-starter",
+	"compatibility_date": "2026-02-10",
+	"compatibility_flags": ["nodejs_compat"],
+
+	"assets": {
+		"binding": "ASSETS",
+		"directory": "./dist"
+	},
+
+	"observability": {
+		"enabled": true
+	},
+
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "blog-db",
+			"database_id": "AUTO_PROVISIONED",
+			"migrations_dir": "drizzle"
+		}
+	],
+
+	"r2_buckets": [
+		{
+			"binding": "MEDIA_BUCKET",
+			"bucket_name": "blog-media"
+		}
+	],
+
+	"kv_namespaces": [
+		{
+			"binding": "SESSION",
+			"id": "AUTO_PROVISIONED"
+		}
+	],
+
+	"vars": {
+		"SITE_NAME": "My Blog",
+		"SITE_URL": "https://example.com",
+		"TURNSTILE_SITE_KEY": ""
+	}
+
+	// Secrets (set via `wrangler secret put` or .dev.vars locally):
+	// JWT_SECRET
+	// ADMIN_USERNAME
+	// ADMIN_PASSWORD_HASH
+	// TURNSTILE_SECRET_KEY
+}

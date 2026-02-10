@@ -1,0 +1,85 @@
+---
+import { desc, eq, sql } from "drizzle-orm";
+import { blogCategories, blogPosts } from "@/db/schema";
+import { getDb } from "@/lib/db";
+
+const page = Number(Astro.url.searchParams.get("page") || "1");
+const limit = 10;
+const offset = (page - 1) * limit;
+
+let _posts: Array<{
+	title: string;
+	slug: string;
+	excerpt: string | null;
+	publishedAt: string | null;
+	authorName: string | null;
+	categoryName: string | null;
+}> = [];
+let totalPosts = 0;
+
+try {
+	const { env } = Astro.locals.runtime;
+	const db = getDb(env.DB);
+
+	const [countResult] = await db
+		.select({ count: sql<number>`count(*)` })
+		.from(blogPosts)
+		.where(eq(blogPosts.status, "published"));
+	totalPosts = countResult?.count ?? 0;
+
+	_posts = await db
+		.select({
+			title: blogPosts.title,
+			slug: blogPosts.slug,
+			excerpt: blogPosts.excerpt,
+			publishedAt: blogPosts.publishedAt,
+			authorName: blogPosts.authorName,
+			categoryName: blogCategories.name,
+		})
+		.from(blogPosts)
+		.leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
+		.where(eq(blogPosts.status, "published"))
+		.orderBy(desc(blogPosts.publishedAt))
+		.limit(limit)
+		.offset(offset);
+} catch {
+	// D1 not bound yet
+}
+
+const _totalPages = Math.ceil(totalPosts / limit);
+---
+
+<Base title="Blog" description="All blog posts">
+	<h1 style="font-size: var(--font-size-3xl); margin-bottom: var(--space-lg);">Blog</h1>
+
+	{posts.length > 0 ? (
+		<div style="display: grid; gap: var(--space-lg);">
+			{posts.map((post) => (
+				<PostCard
+					title={post.title}
+					slug={post.slug}
+					excerpt={post.excerpt}
+					publishedAt={post.publishedAt}
+					authorName={post.authorName}
+					categoryName={post.categoryName}
+				/>
+			))}
+		</div>
+	) : (
+		<p style="color: var(--color-text-muted);">No posts published yet.</p>
+	)}
+
+	{totalPages > 1 && (
+		<nav style="display: flex; gap: var(--space-md); justify-content: center; margin-top: var(--space-2xl);" aria-label="Pagination">
+			{page > 1 && (
+				<a href={`/blog?page=${page - 1}`}>Previous</a>
+			)}
+			<span style="color: var(--color-text-muted);">
+				Page {page} of {totalPages}
+			</span>
+			{page < totalPages && (
+				<a href={`/blog?page=${page + 1}`}>Next</a>
+			)}
+		</nav>
+	)}
+</Base>

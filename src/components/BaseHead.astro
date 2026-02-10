@@ -1,0 +1,46 @@
+---
+import { siteConfig } from "@/lib/types";
+
+interface Props {
+	title: string;
+	description?: string;
+	image?: string;
+	canonicalUrl?: string;
+}
+
+const {
+	title,
+	description = siteConfig.description,
+	image,
+	canonicalUrl,
+} = Astro.props;
+
+const _fullTitle =
+	title === siteConfig.name ? title : `${title} | ${siteConfig.name}`;
+const _resolvedUrl = canonicalUrl || Astro.url.href;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={resolvedUrl} />
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="sitemap" href="/sitemap.xml" />
+<link rel="alternate" type="application/rss+xml" title={siteConfig.name} href="/rss.xml" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={resolvedUrl} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+{image && <meta property="og:image" content={image} />}
+
+<!-- Twitter -->
+<meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+{image && <meta name="twitter:image" content={image} />}

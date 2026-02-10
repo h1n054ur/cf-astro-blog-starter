@@ -1,0 +1,78 @@
+---
+import { desc, eq, like, or } from "drizzle-orm";
+import { blogCategories, blogPosts } from "@/db/schema";
+import { getDb } from "@/lib/db";
+
+const query = Astro.url.searchParams.get("q")?.trim() || "";
+
+let _results: Array<{
+	title: string;
+	slug: string;
+	excerpt: string | null;
+	publishedAt: string | null;
+	authorName: string | null;
+	categoryName: string | null;
+}> = [];
+
+if (query) {
+	try {
+		const { env } = Astro.locals.runtime;
+		const db = getDb(env.DB);
+		const pattern = `%${query}%`;
+
+		_results = await db
+			.select({
+				title: blogPosts.title,
+				slug: blogPosts.slug,
+				excerpt: blogPosts.excerpt,
+				publishedAt: blogPosts.publishedAt,
+				authorName: blogPosts.authorName,
+				categoryName: blogCategories.name,
+			})
+			.from(blogPosts)
+			.leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
+			.where(
+				or(
+					like(blogPosts.title, pattern),
+					like(blogPosts.content, pattern),
+					like(blogPosts.excerpt, pattern),
+				),
+			)
+			.orderBy(desc(blogPosts.publishedAt))
+			.limit(20);
+	} catch {
+		// D1 not bound
+	}
+}
+---
+
+<Base title="Search" description="Search blog posts">
+	<h1 style="font-size: var(--font-size-3xl); margin-bottom: var(--space-lg);">Search</h1>
+
+	<Search />
+
+	{query && (
+		<div style="margin-top: var(--space-xl);">
+			<p style="color: var(--color-text-muted); margin-bottom: var(--space-lg);">
+				{results.length > 0
+					? `Found ${results.length} result${results.length === 1 ? "" : "s"} for "${query}"`
+					: `No results found for "${query}"`}
+			</p>
+
+			{results.length > 0 && (
+				<div style="display: grid; gap: var(--space-lg);">
+					{results.map((post) => (
+						<PostCard
+							title={post.title}
+							slug={post.slug}
+							excerpt={post.excerpt}
+							publishedAt={post.publishedAt}
+							authorName={post.authorName}
+							categoryName={post.categoryName}
+						/>
+					))}
+				</div>
+			)}
+		</div>
+	)}
+</Base>

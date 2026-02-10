@@ -1,0 +1,61 @@
+{
+	"name": "cf-astro-blog-starter",
+	"version": "0.1.0",
+	"type": "module",
+	"private": true,
+	"description": "Astro + Hono + Cloudflare Workers starter with built-in CMS, admin panel, and analytics",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro build && wrangler dev",
+		"deploy": "npm run db:migrate:remote && astro build && wrangler deploy",
+		"check": "astro check && bunx biome check src/ tests/",
+		"check:fix": "bunx biome check --fix src/ tests/",
+		"format": "bunx biome format --write src/ tests/",
+		"lint": "bunx biome lint src/ tests/",
+		"test": "bun test",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate:local": "wrangler d1 migrations apply DB --local",
+		"db:migrate:remote": "wrangler d1 migrations apply DB --remote"
+	},
+	"cloudflare": {
+		"bindings": {
+			"DB": {
+				"description": "D1 database for blog posts, categories, tags, and analytics"
+			},
+			"MEDIA_BUCKET": {
+				"description": "R2 bucket for media uploads (images, files)"
+			},
+			"SESSION": {
+				"description": "KV namespace for session storage and caching"
+			},
+			"JWT_SECRET": {
+				"description": "Generate a random string using `openssl rand -hex 32`"
+			},
+			"ADMIN_USERNAME": {
+				"description": "Username for the admin panel login"
+			},
+			"ADMIN_PASSWORD_HASH": {
+				"description": "SHA-256 hash of your admin password. Generate with: `echo -n 'yourpassword' | sha256sum`"
+			},
+			"TURNSTILE_SECRET_KEY": {
+				"description": "Cloudflare Turnstile secret key from the [Turnstile dashboard](https://dash.cloudflare.com/turnstile)"
+			}
+		}
+	},
+	"dependencies": {
+		"@astrojs/cloudflare": "^12.6.12",
+		"astro": "^5.17.1",
+		"drizzle-orm": "^0.45.1",
+		"hono": "^4.11.6",
+		"jose": "^6.1.3",
+		"marked": "^15.0.7"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.11",
+		"@cloudflare/workers-types": "^4.20260111.0",
+		"drizzle-kit": "^0.30.0",
+		"typescript": "^5.9.3",
+		"wrangler": "^4.50.0"
+	}
+}

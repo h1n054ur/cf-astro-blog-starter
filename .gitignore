@@ -1,0 +1,29 @@
+# build
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# wrangler
+.wrangler/
+.dev.vars
+
+# environment
+.env
+.env.*
+
+# os
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+
+# bun
+bun.lock
+
+# drizzle local
+*.db
+*.db-journal

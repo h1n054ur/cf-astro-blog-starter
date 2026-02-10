@@ -1,0 +1,50 @@
+---
+const _year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+	<div class="container footer-inner">
+		<p>&copy; {year} {siteConfig.name}. Built with Astro + Hono on Cloudflare Workers.</p>
+		<nav class="footer-links">
+			<a href="/rss.xml">RSS</a>
+			<a href="/sitemap.xml">Sitemap</a>
+		</nav>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		border-top: 1px solid var(--color-border);
+		padding-block: var(--space-xl);
+		margin-top: auto;
+	}
+
+	.footer-inner {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: var(--font-size-sm);
+		color: var(--color-text-muted);
+	}
+
+	.footer-links {
+		display: flex;
+		gap: var(--space-md);
+	}
+
+	.footer-links a {
+		color: var(--color-text-muted);
+	}
+
+	.footer-links a:hover {
+		color: var(--color-accent);
+	}
+
+	@media (max-width: 640px) {
+		.footer-inner {
+			flex-direction: column;
+			gap: var(--space-sm);
+			text-align: center;
+		}
+	}
+</style>
